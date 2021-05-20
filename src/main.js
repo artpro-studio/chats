@@ -6,16 +6,15 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import VueSocketIO from 'vue-socket.io'
 import SocketIO from 'socket.io-client'
+
+
 Vue.config.productionTip = false;
-
-
-
 
 const options = { path: '/' }; //Options object to pass into SocketIO
 
 Vue.use(new VueSocketIO({
       debug: true,
-      connection: SocketIO('wss://nane.tada.team/ws?username=test2', options), //options object is Optional
+      connection: SocketIO('https://nane.tada.team', options), //options object is Optional
       vuex: {
         store,
         actionPrefix: "SOCKET_",

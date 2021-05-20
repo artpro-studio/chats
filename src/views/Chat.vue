@@ -26,12 +26,13 @@
 </template>
 
 <script>
-    //import io from "socket.io-client"
-    //import VueSocketIO from 'vue-socket.io'
+    // import SocketIO from "socket.io-client"
+    // import VueSocketIO from 'vue-socket.io'
 
     const axios = require('axios').default;
 
     import itemChat from '../components/itemChat'
+    import store from "../store";
     export default {
         socket:{},
         name: "Chat",
@@ -45,6 +46,7 @@
               },
               chatId: '',
               messages: [],
+              socket:{},
           }
         },
         async created() {
@@ -55,18 +57,41 @@
                    this.messages = request.data.result;
                    console.log('this.messages', request)
                }
-               //this.socket = io(`wss://nane.tada.team/ws?username=test`, {})
            }
 
            } catch (e) {
                console.log(e)
            }
         },
+        // mounted() {
+        //     try {
+        //         const options = { path: '/' };
+        //         this.socket = new VueSocketIO({
+        //             debug: true,
+        //             connection: SocketIO('wss://nane.tada.team/ws?username=kozma', options), //options object is Optional
+        //             vuex: {
+        //                 store,
+        //                 actionPrefix: "SOCKET_",
+        //                 mutationPrefix: "SOCKET_"
+        //             }
+        //         })
+        //         console.log(this.socket)
+        //     } catch (e) {
+        //         console.log(e)
+        //     }
+        // },
         methods:{
             sendMessage(){
                 if(!this.form.text){
                     return;
                 }
+                let data = {
+                    "room": 'test2', // название комнаты. Если такой комнаты нет, она будет создана
+                    "text":'Привет мир', // текст сообщения
+                    "id": 2 // необязательный идентификатор, можно назначить на клиенте, чтобы получить подтверждение получения сообщения сервером
+                }
+                this.socket.send(data)
+                console.log('Отправили')
             },
             exitChat(){
                 console.log('Выйти')
