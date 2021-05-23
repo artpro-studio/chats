@@ -1,32 +1,15 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import auth from './modules/auth'
+import chat from './modules/chat'
+import rooms from './modules/rooms'
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {
-    username: '',
+  modules: {
+    auth,
+    rooms,
+    chat,
   },
-  mutations: {
-    setUser(state, username){
-      state.username = username
-    },
-    cleaUser(state){
-      state.username = ''
-    }
-  },
-  actions: {
-    addUser({commit}, username){
-      commit('setUser', username)
-    },
-    clearUser({commit}){
-      commit('cleaUser')
-    }
-  },
-  getters:{
-    isAuth(state){
-      return state.username
-    }
-  },
-  modules: {},
 });

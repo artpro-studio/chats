@@ -1,9 +1,9 @@
 <template>
     <v-container style="height: 100%">
         <div class="chats">
-            <itemChat :data-messages="messages" />
+            <itemChat />
             <div class="chats__form">
-                <v-form class="d-flex ">
+                <v-form class="d-flex" @submit.prevent="sendMessage">
                     <v-text-field v-model="form.text" placeholder="Ваше сообщение"></v-text-field>
                     <v-btn
                             color="success"
@@ -26,13 +26,8 @@
 </template>
 
 <script>
-    // import SocketIO from "socket.io-client"
-    // import VueSocketIO from 'vue-socket.io'
-
-    const axios = require('axios').default;
 
     import itemChat from '../components/itemChat'
-    import store from "../store";
     export default {
         socket:{},
         name: "Chat",
@@ -44,58 +39,44 @@
               form:{
                   text: ''
               },
-              chatId: '',
-              messages: [],
-              socket:{},
+              roomID: this.$route.query.room,
+              oldMessags:[],
           }
         },
         async created() {
-           try { if(this.$route.query.username){
-               this.chatId = this.$route.query.username
-               const request = await axios.get(`https://nane.tada.team/api/rooms/${this.chatId}/history`);
-               if(request.data){
-                   this.messages = request.data.result;
-                   console.log('this.messages', request)
+           try {
+               if(this.$route.query.room){
+                   this.$store.dispatch('allMessages', this.roomID)
+                   this.$store.dispatch('resetCount', this.roomID)
                }
-           }
 
            } catch (e) {
-               console.log(e)
+                console.log(e)
            }
         },
-        // mounted() {
-        //     try {
-        //         const options = { path: '/' };
-        //         this.socket = new VueSocketIO({
-        //             debug: true,
-        //             connection: SocketIO('wss://nane.tada.team/ws?username=kozma', options), //options object is Optional
-        //             vuex: {
-        //                 store,
-        //                 actionPrefix: "SOCKET_",
-        //                 mutationPrefix: "SOCKET_"
-        //             }
-        //         })
-        //         console.log(this.socket)
-        //     } catch (e) {
-        //         console.log(e)
-        //     }
-        // },
         methods:{
             sendMessage(){
                 if(!this.form.text){
                     return;
                 }
                 let data = {
-                    "room": 'test2', // название комнаты. Если такой комнаты нет, она будет создана
-                    "text":'Привет мир', // текст сообщения
-                    "id": 2 // необязательный идентификатор, можно назначить на клиенте, чтобы получить подтверждение получения сообщения сервером
+                    "room": this.roomID, // название комнаты. Если такой комнаты нет, она будет создана
+                    "text": this.form.text, // текст сообщения
+                    "id": this.$store.state.auth.username
                 }
-                this.socket.send(data)
+
+                this.$store.dispatch('sendMessage', data)
+
+                this.form.text = ''
                 console.log('Отправили')
             },
             exitChat(){
-                console.log('Выйти')
-            }
+                this.$store.dispatch('exitChat')
+                this.$router.push({
+                    path: '/rooms',
+                })
+
+            },
         }
     }
 </script>
@@ -114,6 +95,15 @@
             bottom: 0;
             left: 0;
             width: 100%;
+        }
+    }
+    @media screen and (max-width: 650px){
+        .chats{
+            &__form{
+                form{
+                    flex-wrap: wrap;
+                }
+            }
         }
     }
 </style>

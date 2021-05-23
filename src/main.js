@@ -4,24 +4,23 @@ import "./registerServiceWorker";
 import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
-import VueSocketIO from 'vue-socket.io'
-import SocketIO from 'socket.io-client'
+
 
 
 Vue.config.productionTip = false;
 
-const options = { path: '/' }; //Options object to pass into SocketIO
+// const options = { path: '/' }; //Options object to pass into SocketIO
 
-Vue.use(new VueSocketIO({
-      debug: true,
-      connection: SocketIO('https://nane.tada.team', options), //options object is Optional
-      vuex: {
-        store,
-        actionPrefix: "SOCKET_",
-        mutationPrefix: "SOCKET_"
-      }
-    })
-);
+// Vue.use(new VueSocketIO({
+//       debug: true,
+//       connection: SocketIO('https://nane.tada.team', options), //options object is Optional
+//       vuex: {
+//         store,
+//         actionPrefix: "SOCKET_",
+//         mutationPrefix: "SOCKET_"
+//       }
+//     })
+// );
 
 
 new Vue({

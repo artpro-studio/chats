@@ -28,6 +28,11 @@ const routes = [
   {
     path: "/chat",
     name: "Chat",
+    meta: {
+      middleware: [
+        isAuth
+      ]
+    },
     component: Chat,
   },
 ];

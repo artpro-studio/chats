@@ -1,6 +1,6 @@
 export default function isAuth ({ next, store }){
-    console.log('sadasd', store.state.username)
-    if(!store.state.username){
+    console.log('sadasd', store.state.auth.username)
+    if(!store.state.auth.username){
         return next({
             path: '/'
         })

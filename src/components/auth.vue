@@ -1,13 +1,22 @@
 <template>
-    <v-card max-width="374" class="pa-6 ml-auto mr-auto">
-        <v-card-title>Авторизация</v-card-title>
-        <v-card-subtitle>Чтобы авторизоватся введите ваше Login</v-card-subtitle>
-        <v-form ref="form" v-model="valid" lazy-validation class="pa-3">
-            <v-text-field v-model="name" :counter="30" :rules="nameRules" label="Логин" required></v-text-field>
+    <v-main>
+        <v-card max-width="374" class="pa-6 ml-auto mr-auto" v-if="$store.state.auth.username === null">
+            <v-card-title>Авторизация</v-card-title>
+            <v-card-subtitle>Чтобы авторизоватся введите ваше Login</v-card-subtitle>
+            <v-form ref="form" v-model="valid" lazy-validation class="pa-3" @submit.prevent="validate">
+                <v-text-field v-model="name" :counter="30" :rules="nameRules" label="Логин" required></v-text-field>
 
-            <v-btn class="btn_full mt-5" :disabled="!valid" color="success"  @click="validate">Войти</v-btn>
-        </v-form>
-    </v-card>
+                <v-btn class="btn_full mt-5" :disabled="!valid" color="success" @click="validate">Войти</v-btn>
+            </v-form>
+        </v-card>
+        <v-card max-width="374" class="pa-6 ml-auto mr-auto" v-else>
+            <v-card-title>Вы уже авторизованы</v-card-title>
+            <v-form ref="form" v-model="valid" lazy-validation class="pa-3">
+                <v-btn class="btn_full mt-5" :disabled="!valid" color="success"  @click="toRooms">Войти</v-btn>
+            </v-form>
+        </v-card>
+    </v-main>
+
 </template>
 
 <script>
@@ -23,17 +32,22 @@
         }),
 
         methods: {
-            validate () {
+            async validate () {
                 const isforms = this.$refs.form.validate()
                 if(!isforms){
                     return;
                 }
 
-                this.$store.dispatch('addUser', this.name)
+                await this.$store.dispatch('addUser', this.name)
                 this.$router.push({
                     path: 'rooms',
                 })
             },
+            toRooms(){
+                this.$router.push({
+                    path: 'rooms',
+                })
+            }
         },
     }
 </script>

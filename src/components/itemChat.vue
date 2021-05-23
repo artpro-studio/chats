@@ -1,6 +1,10 @@
 <template>
     <div class="chats__content" id="chats__content">
-        <v-list-item v-for="(item, index) in messages" :key="index" class="message" :class="{main: $store.state.username === item.room}">
+        <v-list-item
+                v-for="(item, index) in $store.state.chat.messages"
+                :key="index"
+                class="message"
+                :class="$store.state.auth.username === item.sender.username ?['primary', 'main'] : []">
             <v-list-item-content>
                 <v-list-item-title>{{item.text}}</v-list-item-title>
                 <v-list-item-subtitle>
@@ -20,9 +24,6 @@
                 messages: [],
             }
         },
-        mounted() {
-            this.scrollChat();
-        },
         methods:{
           scrollChat(){
               let block = document.querySelector(".chats__content");
@@ -30,9 +31,11 @@
           }
         },
         watch:{
-            dataMessages: async function (e) {
+            '$store.state.chat.messages': async function (e) {
                 this.messages = await e;
-                this.scrollChat();
+                setTimeout(() => {
+                    this.scrollChat();
+                }, 0)
             }
         }
     }
@@ -45,6 +48,17 @@
         margin-bottom: 10px;
         border-radius: 5px;
         font-size: .9em;
+        &.main{
+            margin-right: 0;
+            margin-left: auto;
+            color: #fff !important;
+            &.theme--light.v-list-item{
+                color: #fff !important;
+            }
+            .v-list-item__subtitle{
+                color: #fff !important;
+            }
+        }
         .v-list-item__title{
             font-size: 1em;
             white-space: inherit;
